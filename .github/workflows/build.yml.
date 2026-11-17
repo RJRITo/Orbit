@@ -1,5 +1,7 @@
 name: Build APK
-on: [push, workflow_dispatch]
+on:
+  push:
+  workflow_dispatch:
 jobs:
   apk:
     runs-on: ubuntu-latest
@@ -7,7 +9,9 @@ jobs:
       - uses: actions/checkout@v4
       - run: unzip -q orbit-android-project.zip -d proj
       - uses: actions/setup-java@v4
-        with: { distribution: temurin, java-version: 17 }
+        with:
+          distribution: temurin
+          java-version: 17
       - run: |
           cd proj
           curl -fsSL https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip -o /tmp/m.zip
@@ -15,7 +19,10 @@ jobs:
           mv /tmp/m/vosk-model-small-en-us-0.15 app/src/main/assets/model-en-us
           uuidgen > app/src/main/assets/model-en-us/uuid
       - uses: gradle/actions/setup-gradle@v4
-        with: { gradle-version: 8.9 }
+        with:
+          gradle-version: 8.9
       - run: cd proj && gradle assembleDebug
       - uses: actions/upload-artifact@v4
-        with: { name: orbit-apk, path: proj/app/build/outputs/apk/debug/app-debug.apk }
+        with:
+          name: orbit-apk
+          path: proj/app/build/outputs/apk/debug/app-debug.apk
